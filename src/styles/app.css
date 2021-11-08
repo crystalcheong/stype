@@ -4,14 +4,6 @@
 /* Google Fonts */
 @import url("https://fonts.googleapis.com/css2?family=Overpass:wght@300;400;500;600&display=swap");
 
-:root {
-  --svelte-primary: #f43b00;
-  --primary: var(--svelte-primary);
-  --default-letter: gray;
-  --mismatched-letter: red;
-  --matched-letter: green;
-}
-
 *,
 *::before,
 *::after {
@@ -66,7 +58,22 @@ body > * {
   /* border:.1px solid green; */
   margin: 0 auto;
 
-  width: 80%;
+  width: 50%;
+  max-width: 55rem;
+}
+
+/* Medium devices (landscape tablets, 768px and up) */
+@media only screen and (max-width: 768px) {
+  body > * {
+    width: 75%;
+  }
+}
+
+/* Extra small devices (phones, 600px and down) */
+@media only screen and (max-width: 600px) {
+  body > * {
+    width: 80%;
+  }
 }
 
 main {
@@ -76,6 +83,7 @@ main {
   justify-content: center;
   align-items: center;
   align-content: center;
+  gap:1em;
 }
 
 main > * {
@@ -83,9 +91,9 @@ main > * {
 }
 
 .blinking-cursor {
-  width:0.01em;
+  width: 0.01em;
   font-weight: 200;
-  color: var(--primary);
+  color: var(--primary-color) !important;
   -webkit-animation: 1s blink step-end infinite;
   -moz-animation: 1s blink step-end infinite;
   -ms-animation: 1s blink step-end infinite;
@@ -99,7 +107,7 @@ main > * {
     color: transparent;
   }
   50% {
-    color: var(--primary);
+    color: var(--primary-color) !important;
   }
 }
 
@@ -109,7 +117,7 @@ main > * {
     color: transparent;
   }
   50% {
-    color: var(--primary);
+    color: var(--primary-color) !important;
   }
 }
 
@@ -119,7 +127,7 @@ main > * {
     color: transparent;
   }
   50% {
-    color: var(--primary);
+    color: var(--primary-color) !important;
   }
 }
 
@@ -129,7 +137,7 @@ main > * {
     color: transparent;
   }
   50% {
-    color: var(--primary);
+    color: var(--primary-color) !important;
   }
 }
 
@@ -139,6 +147,6 @@ main > * {
     color: transparent;
   }
   50% {
-    color: var(--primary);
+    color: var(--primary-color) !important;
   }
 }

@@ -1,7 +1,10 @@
 <script lang="ts">
-  import { onMount, afterUpdate, tick } from "svelte";
+  import { onMount, afterUpdate, onDestroy, tick } from "svelte";
   import { WordsData } from "./data";
+  import { Stores } from "./data";
+  import ThemeSwitcher from "./components/ThemeSwitcher.svelte";
 
+  let theme = Stores.theme;
   let key: string = "";
   let words: string[] = [];
   let activeIdx: number = 0;
@@ -15,9 +18,35 @@
   let activeWidth: number = 0;
   let lineWidth: number = 0;
   let viewNextLine: boolean = false;
+  const viewWidthBuffer = 0.85;
+
+  let frame;
+  let elapsed: number = 0;
+  let duration: number = 30000;
+  let last_time = window.performance.now();
+  let timerModeEnded: boolean = true;
+
+  (function updateTimer() {
+    if (elapsed !== duration) {
+      frame = requestAnimationFrame(updateTimer);
+    } else if (elapsed === duration) {
+      console.log(`END OF TIMER MODE`);
+      timerModeEnded = true;
+    }
+
+    if (typedWord.length > 0 || typeHistory.length > 0) {
+      console.log(elapsed);
+
+      const time = window.performance.now();
+      elapsed += Math.min(time - last_time, duration - elapsed);
+
+      last_time = time;
+    }
+  })();
 
   $: activeIdx, (activeWord = words[activeIdx]);
-  $: lineWidth, (viewNextLine = lineWidth > viewWidth ? true : false);
+  $: lineWidth,
+    (viewNextLine = lineWidth >= viewWidth * viewWidthBuffer ? true : false);
   $: if (viewNextLine) scrollLine(viewNextLine);
 
   function generateWords() {
@@ -28,19 +57,27 @@
     typeHistory = [];
 
     console.log(words);
+
+    elapsed = 0;
+    timerModeEnded = false;
   }
 
   function resetFields() {
+    activeElement = null;
     activeWidth = 0;
     typedWord = overflowWord = "";
   }
 
-  function handleKeydown(e) {
+  async function handleKeydown(e) {
     key = e.key;
     let keyCode = e.keyCode;
 
     let miscKeyCodes = [13, 16, 17, 18, 20, 27, 37, 38, 39, 40, 45, 46, 220];
-    if (miscKeyCodes.includes(keyCode) || (e.ctrlKey && e.keyCode == 82) || e.metaKey)
+    if (
+      miscKeyCodes.includes(keyCode) ||
+      (e.ctrlKey && e.keyCode == 82) ||
+      e.metaKey
+    )
       return;
 
     e.preventDefault();
@@ -52,11 +89,23 @@
 
     // SPACE [32] - Next word
     else if (keyCode === 32) {
+      if (activeIdx === words.length - 1) {
+        console.log("ADDED MORE WORDS");
+        let updatedWords = [
+          ...words,
+          ...WordsData.words.sort(() => Math.random() - 0.5),
+        ];
+
+        words = updatedWords;
+        await tick();
+      }
+
+      typeHistory.push(typedWord + overflowWord);
+
       activeElement = document.querySelector(".activeWord");
       activeWidth = activeElement.offsetWidth;
       lineWidth += activeWidth;
 
-      typeHistory.push(typedWord + overflowWord);
       activeIdx++;
       resetFields();
     }
@@ -86,25 +135,38 @@
         activeElement = document.querySelector(".activeWord");
         activeWidth = activeElement.offsetWidth;
         lineWidth -= activeWidth;
+
+        if (
+          lineWidth * viewWidthBuffer <= 0 ||
+          lineWidth < viewWidth * (1 - viewWidthBuffer)
+        ) {
+          scrollLine(viewNextLine);
+        }
       }
     }
 
     // Acceptable inputs
     else {
-      if (typedWord.length >= activeWord.length && overflowWord.length <= 10) {
-        overflowWord += key;
-      } else if (typedWord.length < activeWord.length) {
-        typedWord += key;
+      if (!timerModeEnded) {
+        if (
+          typedWord.length >= activeWord.length &&
+          overflowWord.length <= 10
+        ) {
+          overflowWord += key;
+        } else if (typedWord.length < activeWord.length) {
+          typedWord += key;
+        }
       }
     }
   }
 
   async function scrollLine(nextLine) {
+    if (!viewport) return;
     const { scrollTop, scrollHeight } = viewport;
 
     viewport.scrollTo({
       left: 0,
-      top: nextLine ? scrollTop + 35 : scrollTop - 35,
+      top: nextLine ? scrollTop + 36 : scrollTop - 36,
       behavior: "smooth",
     });
 
@@ -128,13 +190,24 @@
       lineWidth: lineWidth,
     });
   });
+
+  onDestroy(() => {
+    cancelAnimationFrame(frame);
+  });
 </script>
+
+<svelte:head>
+  <meta
+    name="color-scheme"
+    content={$theme == "system" ? "light dark" : $theme}
+  /> <link rel="stylesheet" href={`../src/styles/themes/${$theme}.css`} />
+</svelte:head>
 
 <svelte:window on:keydown={handleKeydown} />
 
 <nav>
   <div class="branding">
-    <h1 class="brand-name">STYPE</h1>
+    <h1 class="brand-name">stype</h1>
   </div>
 </nav>
 
@@ -144,11 +217,18 @@
       ? "true"
       : "false"}]
   </p> -->
+
+  <div class="timer">
+    <h2>
+      {((duration - elapsed) / 1000).toFixed(0)}
+    </h2>
+  </div>
+
   <section class="type-test" bind:this={viewport} bind:offsetWidth={viewWidth}>
     {#each words as word, idx}
       <p class:activeWord={idx === activeIdx}>
         {#each word as char, id}
-          {#if (idx === activeIdx && id === typedWord.length)}
+          {#if idx === activeIdx && id === typedWord.length}
             <span class="blinking-cursor">|</span>
           {/if}
           <span
@@ -183,9 +263,16 @@
     {/each}
   </section>
 </main>
-<!-- <footer>Footer</footer> -->
+<footer>
+  Footer
+  <ThemeSwitcher />
+</footer>
 
 <style>
+  :global(body) {
+    background-color: var(--background-color);
+  }
+
   nav {
     display: flex;
     flex-direction: row;
@@ -194,12 +281,12 @@
     align-content: center;
 
     padding: 2vh 0 1vh;
-    flex:0.1;
+    flex: 0.1;
   }
 
-  /* footer {
+  footer {
     padding: 2vh 0 1vh;
-  } */
+  }
 
   .branding {
     /* border: 0.1px solid green; */
@@ -209,7 +296,15 @@
 
   .brand-name {
     font-weight: 600;
-    color: var(--primary);
+    color: var(--primary-color);
+  }
+
+  .timer {
+    /* border: 0.1px solid red; */
+    width: 100%;
+    color: var(--primary-color);
+    font-size: 1.5rem;
+    font-weight: 600;
   }
 
   .type-test {
@@ -240,14 +335,17 @@
 
   .match {
     color: var(--matched-letter) !important;
+
+    filter: brightness(2.5);
   }
 
   .mismatch {
     color: var(--mismatched-letter) !important;
-    text-decoration-color: var(--mismatched-letter)!important;
+    text-decoration-color: var(--mismatched-letter) !important;
+    filter: brightness(2.5);
   }
 
-  .overflow{
+  .overflow {
     font-weight: lighter !important;
   }
 </style>
