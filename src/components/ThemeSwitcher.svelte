@@ -1,13 +1,14 @@
 <script lang="ts" context="module">
-  import { Stores } from "../data";
+  import { ThemeStore } from "../stores";
 
-  let theme = Stores.theme;
+  let theme = ThemeStore.theme;
 
   let themes = [
     { name: "System", value: "system" },
     { name: "Light", value: "light" },
-    { name: "Dark", value: "dark" },
+    { name: "Dark", value: "default" },
   ];
+  
 </script>
 
 <select bind:value={$theme}>

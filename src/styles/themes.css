@@ -1,0 +1,20 @@
+.light {
+  --background-color: #eeeeee;
+  --primary-color: #f43b00;
+  --accent-color: gray;
+
+  --default-letter: var(--accent-color);
+  --mismatched-letter: red;
+  --matched-letter: var(--primary-color);
+}
+
+.default {
+  --background-color: #121212;
+  --primary-color: #f43b00;
+  --accent-color: gray;
+
+  --default-letter: var(--accent-color);
+  --mismatched-letter: red;
+  --matched-letter: var(--primary-color);
+}
+

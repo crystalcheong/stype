@@ -1,10 +1,11 @@
 <script lang="ts">
-  import { onMount, afterUpdate, onDestroy, tick } from "svelte";
+  import { onMount, afterUpdate, tick } from "svelte";
+
   import { WordsData } from "./data";
-  import { Stores } from "./data";
+  import { ThemeStore, CountdownTimer } from "./stores";
   import ThemeSwitcher from "./components/ThemeSwitcher.svelte";
 
-  let theme = Stores.theme;
+  let theme = ThemeStore.theme;
   let key: string = "";
   let words: string[] = [];
   let activeIdx: number = 0;
@@ -20,34 +21,17 @@
   let viewNextLine: boolean = false;
   const viewWidthBuffer = 0.85;
 
-  let frame;
-  let elapsed: number = 0;
-  let duration: number = 30000;
-  let last_time = window.performance.now();
-  let timerModeEnded: boolean = true;
-
-  (function updateTimer() {
-    if (elapsed !== duration) {
-      frame = requestAnimationFrame(updateTimer);
-    } else if (elapsed === duration) {
-      console.log(`END OF TIMER MODE`);
-      timerModeEnded = true;
-    }
-
-    if (typedWord.length > 0 || typeHistory.length > 0) {
-      console.log(elapsed);
-
-      const time = window.performance.now();
-      elapsed += Math.min(time - last_time, duration - elapsed);
-
-      last_time = time;
-    }
-  })();
+  let time = CountdownTimer.time;
+  let timer = CountdownTimer.timer;
+  let timerIsRunning = CountdownTimer.isRunning;
+  let timeIsComplete = CountdownTimer.isComplete;
 
   $: activeIdx, (activeWord = words[activeIdx]);
   $: lineWidth,
     (viewNextLine = lineWidth >= viewWidth * viewWidthBuffer ? true : false);
   $: if (viewNextLine) scrollLine(viewNextLine);
+
+  $: console.log(">>>", $time);
 
   function generateWords() {
     words = WordsData.words.sort(() => Math.random() - 0.5);
@@ -56,10 +40,8 @@
     activeWord = words[activeIdx];
     typeHistory = [];
 
+    timer.reset();
     console.log(words);
-
-    elapsed = 0;
-    timerModeEnded = false;
   }
 
   function resetFields() {
@@ -147,7 +129,11 @@
 
     // Acceptable inputs
     else {
-      if (!timerModeEnded) {
+      if (!$timerIsRunning && key && typeHistory.length == 0 && typedWord.length == 0) {
+        timer.start();
+      }
+
+      if ($timerIsRunning && !$timeIsComplete) {
         if (
           typedWord.length >= activeWord.length &&
           overflowWord.length <= 10
@@ -191,17 +177,23 @@
     });
   });
 
-  onDestroy(() => {
-    cancelAnimationFrame(frame);
-  });
+  function classList(node, bar) {
+    window.document.body.className = $theme == "system" ? "default" : $theme;
+
+    return {
+      update(bar) {
+        window.document.body.className =
+          $theme == "system" ? "default" : $theme;
+      },
+    };
+  }
 </script>
 
 <svelte:head>
-  <meta
-    name="color-scheme"
-    content={$theme == "system" ? "light dark" : $theme}
-  /> <link rel="stylesheet" href={`../src/styles/themes/${$theme}.css`} />
+  <meta name="color-scheme" content={$theme == "system" ? "default" : $theme} />
 </svelte:head>
+
+<svelte:body use:classList={$theme} />
 
 <svelte:window on:keydown={handleKeydown} />
 
@@ -220,8 +212,17 @@
 
   <div class="timer">
     <h2>
-      {((duration - elapsed) / 1000).toFixed(0)}
+      {$time.slice(-2)}
     </h2>
+
+    <!-- {#if !$timeIsComplete}
+      {#if $timerIsRunning}
+        <button on:click={() => timer.pause()}>pause</button>
+        <button on:click={() => timer.reset()}>reset</button>
+      {:else}
+        <button on:click={() => timer.start()}>start</button>
+      {/if}
+    {/if} -->
   </div>
 
   <section class="type-test" bind:this={viewport} bind:offsetWidth={viewWidth}>

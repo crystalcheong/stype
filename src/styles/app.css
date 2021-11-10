@@ -4,6 +4,9 @@
 /* Google Fonts */
 @import url("https://fonts.googleapis.com/css2?family=Overpass:wght@300;400;500;600&display=swap");
 
+/* Themes */
+@import url("themes.css");
+
 *,
 *::before,
 *::after {
@@ -150,3 +153,5 @@ main > * {
     color: var(--primary-color) !important;
   }
 }
+
+
