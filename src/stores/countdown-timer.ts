@@ -1,18 +1,21 @@
 import { writable } from "svelte/store";
 
-const COUNTDOWN_FROM = 20 * 1000;
+let DEFAULT_DURATION = 30;
+let COUNTDOWN_FROM = DEFAULT_DURATION * 1000;
 
 const formatter = new Intl.DateTimeFormat("en", {
   hour12: false,
   minute: "2-digit",
-  second: "2-digit"
+  second: "2-digit",
 });
 
 export const time = writable(formatter.format(COUNTDOWN_FROM));
 export const isRunning = writable(false);
 export const isComplete = writable(false);
 
-const createTimer = () => {
+const createTimer = (countdown: number = DEFAULT_DURATION) => {
+  COUNTDOWN_FROM = countdown * 1000;
+
   let animationRef;
   let latestStartTime;
   let remainingTime = COUNTDOWN_FROM;
@@ -23,7 +26,7 @@ const createTimer = () => {
       // make a note of the start time
       latestStartTime = timestamp + remainingTime;
     }
-    console.log(timestamp, latestStartTime);
+    // console.log(timestamp, latestStartTime);
 
     // the time to display now
     const currentTime = latestStartTime - timestamp;
@@ -40,7 +43,7 @@ const createTimer = () => {
     animationRef = requestAnimationFrame(animate);
   };
 
-  const api = {
+  const timer = {
     start: () => {
       isRunning.set(true);
       animationRef = requestAnimationFrame(animate);
@@ -57,16 +60,16 @@ const createTimer = () => {
     },
 
     reset: () => {
-      api.pause();
+      timer.pause();
       isComplete.set(false);
       remainingTime = COUNTDOWN_FROM;
       time.set(formatter.format(remainingTime));
-    }
+    },
   };
 
-  return api;
+  return timer;
 };
 
-export const timer = createTimer();
+// export const timer = createTimer();
 
-export default { timer, time, isRunning, isComplete };
+export default { createTimer, time, isRunning, isComplete };
