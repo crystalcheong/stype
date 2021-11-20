@@ -1,5 +1,5 @@
 .light {
-  --background-color: #eeeeee;
+  --background-color: #E1E1E3;
   --primary-color: #f43b00;
   --accent-color: gray;
 
@@ -8,8 +8,8 @@
   --matched-letter: var(--primary-color);
 }
 
-.default {
-  --background-color: #121212;
+.dark {
+  --background-color: #313131;
   --primary-color: #f43b00;
   --accent-color: gray;
 

@@ -1,3 +1,4 @@
-export { default as ThemeStore } from "./theme";
 export { default as CountdownTimer } from "./countdown-timer";
-export { default as Options } from "./options";
+export { default as TypeSession } from "./type-session";
+export { default as OptionStore } from "./options";
+

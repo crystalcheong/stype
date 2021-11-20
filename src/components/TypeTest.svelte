@@ -1,7 +1,8 @@
 <script lang="ts">
   import { onMount, afterUpdate, tick } from "svelte";
-  import { WordsData } from "../data";
-  import { CountdownTimer, Options } from "../stores";
+  import { WordsData, IconsData } from "../data";
+  import { CountdownTimer, TypeSession, OptionStore } from "../stores";
+  import Icon from "./Icon.svelte";
 
   let key: string = "";
   let words: string[] = [];
@@ -18,14 +19,18 @@
   let viewNextLine: boolean = false;
   const viewWidthBuffer = 0.85;
 
-  let duration = Options.duration;
-  let countdown: number = $duration;
+  let modeOptions = OptionStore.mode;
+  let duration = $modeOptions.timerMode.currentDuration;
+
+  let countdown: number = +duration;
   let timer = CountdownTimer.createTimer(countdown);
   let time = CountdownTimer.time;
   let timerIsRunning = CountdownTimer.isRunning;
   let timerIsComplete = CountdownTimer.isComplete;
 
-  let netWPM: number = 0;
+  let typeSession = TypeSession.instance;
+  let rawWPM: number = 0;
+  let accuracy: number = 0;
 
   const generateWords: Function = () =>
     WordsData.words.sort(() => Math.random() - 0.5);
@@ -41,24 +46,33 @@
     timer = CountdownTimer.createTimer(countdown);
     time = CountdownTimer.time;
     timer.reset();
+
+    newTest();
     await tick();
   };
-  const scrollLine = async (nextLine) => {
+  const scrollLine = async (nextLine: Boolean, reset: Boolean = false) => {
     if (!viewport) return;
     const { scrollTop, scrollHeight } = viewport;
 
     viewport.scrollTo({
       left: 0,
-      top: nextLine ? scrollTop + 36 : scrollTop - 36,
+      top: reset ? 0 : nextLine ? scrollTop + 36 : scrollTop - 36,
       behavior: "smooth",
     });
 
     lineWidth = 0;
   };
 
-  $:if($duration != countdown){
-    console.log(`TYPE TEST: ${$duration}`);
-    countdown = $duration;
+  $: if ($modeOptions.timerMode.currentDuration != countdown) {
+    timer.pause();
+
+    duration = countdown = $modeOptions.timerMode.currentDuration;
+
+    newTest();
+  }
+  $: if (duration != countdown) {
+    console.log(`TYPE TEST: ${duration}`);
+    countdown = +duration;
   }
   $: countdown, updateTimer();
   $: activeIdx, (activeWord = words[activeIdx]);
@@ -66,7 +80,7 @@
     (viewNextLine = lineWidth >= viewWidth * viewWidthBuffer ? true : false);
   $: if (viewNextLine) scrollLine(viewNextLine);
 
-  $: if ($timerIsComplete) {
+  $: if ($timerIsComplete && !$timerIsRunning) {
     console.log(`TIMER ENDED`);
 
     if (typedWord.length > 0 && !$timerIsRunning) {
@@ -76,7 +90,10 @@
     let totalChars = 0;
     let totalMatchChars = 0;
     let totalMismatchChars = 0;
-    let accuracy = 0;
+
+    let totalWrongChars = 0;
+    let totalMissedChars = 0;
+    let totalExtraChars = 0;
 
     typeHistory.forEach((word, idx) => {
       totalChars += word.length;
@@ -84,6 +101,10 @@
       let actualWord = words[idx];
       let typed = "";
       let overflow = "";
+      let correct = 0;
+      let wrong = 0;
+      let missed = 0;
+      let extra = 0;
 
       if (word.length > 0) {
         if (word.length > actualWord.length) {
@@ -96,29 +117,91 @@
         [...actualWord].forEach((char, id) => {
           if (char === typed[id]) {
             totalMatchChars += 1;
+            correct += 1;
           } else {
             totalMismatchChars += 1;
+
+            if (typed[id] == null) {
+              missed += 1;
+            } else {
+              wrong += 1;
+            }
           }
         });
         totalMismatchChars += overflow.length;
+        extra += overflow.length;
       } else {
         totalMismatchChars += actualWord.length;
+        missed += overflow.length;
       }
+
+      totalWrongChars += wrong;
+      totalMissedChars += missed;
+      totalExtraChars += extra;
+
+      console.log({
+        actualWord: actualWord,
+        typed: typed,
+        overflow: overflow,
+        correct: correct,
+        wrong: wrong,
+        missed: missed,
+        extra: extra,
+      });
     });
 
-    netWPM = totalChars / 5 / (countdown / 60);
-    accuracy = (totalMatchChars / totalChars) * 100;
+    rawWPM = Number((totalChars / 5 / (countdown / 60)).toPrecision(4));
+    accuracy = Number(((totalMatchChars / totalChars) * 100).toPrecision(4));
+
+    // $typeSession.testActive = false;
+    // $typeSession.history.push({
+    //   rawWPM: rawWPM,
+    //   accuracy: accuracy,
+    //   testMode: {
+    //     mode: `time ${countdown}`,
+    //     language: `english`,
+    //     duration: new Date(1000 * countdown).toISOString().substr(11, 8),
+    //   },
+    //   characters: { match: totalMatchChars, mismatch: totalMismatchChars },
+    // });
+
+    typeSession.update((ts) => {
+      ts.testActive = false;
+      ts.history.push({
+        rawWPM: rawWPM,
+        accuracy: accuracy,
+        testMode: {
+          mode: `time ${countdown}`,
+          language: `english`,
+          duration: new Date(1000 * countdown).toISOString().substr(11, 8),
+        },
+        characters: {
+          match: totalMatchChars,
+          mismatch: totalMismatchChars,
+          totalWrong: totalWrongChars,
+          totalMissed: totalMissedChars,
+          totalExtra: totalExtraChars,
+        },
+      });
+      return ts;
+    });
 
     console.log({
       totalChars: totalChars,
       totalSeconds: countdown,
       totalMinutes: countdown / 60,
-      netWPM: netWPM,
+      rawWPM: rawWPM,
       accuracy: accuracy,
+      totalMatchChars: totalMatchChars,
+      totalMismatchChars: totalMismatchChars,
+      time: new Date(1000 * countdown).toISOString().substr(11, 8),
+      countdown: countdown,
     });
   }
 
   function newTest() {
+    scrollLine(null, true);
+
     words = generateWords();
     activeIdx = activeWidth = lineWidth = 0;
     activeWord = words[activeIdx];
@@ -162,6 +245,7 @@
       typedWord.length == 0
     ) {
       timer.start();
+      $typeSession.testActive = true;
     }
 
     // ACCEPTABLE TEST INPUTS
@@ -197,7 +281,8 @@
               overflowWord = prevTyped.substring(prevWord.length);
               typedWord = prevTyped.slice(0, -overflowWord.length);
             } else {
-              typedWord = prevWord;
+              // typedWord = prevWord;
+              typedWord = prevTyped;
             }
           }
 
@@ -232,16 +317,18 @@
   });
 
   afterUpdate(async () => {
-    // console.log({
-    //   typedWord: typedWord,
-    //   overflowWord: overflowWord,
-    //   typeHistory: typeHistory,
-    //   activeIdx: activeIdx,
-    //   activeWord: activeWord,
-    //   viewNextLine: viewNextLine,
-    //   activeWidth: activeWidth,
-    //   lineWidth: lineWidth,
-    // });
+    if ($timerIsRunning) {
+      console.log({
+        typedWord: typedWord,
+        overflowWord: overflowWord,
+        typeHistory: typeHistory,
+        activeIdx: activeIdx,
+        activeWord: activeWord,
+        viewNextLine: viewNextLine,
+        activeWidth: activeWidth,
+        lineWidth: lineWidth,
+      });
+    }
   });
 </script>
 
@@ -303,6 +390,16 @@
     &nbsp;
   {/each}
 </section>
+
+<Icon
+  {...{
+    filled: false,
+    size: "1.2em",
+    strokeWidth: "30",
+    d: IconsData.arrow_rotate_right,
+  }}
+  on:click={newTest}
+/>
 
 <style>
   .timer {

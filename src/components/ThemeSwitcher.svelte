@@ -1,18 +1,12 @@
-<script lang="ts" context="module">
-  import { ThemeStore } from "../stores";
+<script lang="ts">
+  import { OptionStore } from "../stores";
 
-  let theme = ThemeStore.theme;
-
-  let themes = [
-    { name: "System", value: "system" },
-    { name: "Light", value: "light" },
-    { name: "Dark", value: "default" },
-  ];
-  
+  let themeOptions = OptionStore.theme;
+  let themes = $themeOptions.presets.themes;
 </script>
 
-<select bind:value={$theme}>
-  {#each themes as { name, value }, id}
-    <option {value}>{name}</option>
+<select bind:value={$themeOptions.presets.currentTheme}>
+  {#each themes as theme}
+    <option value={theme}>{theme}</option>
   {/each}
 </select>

@@ -57,11 +57,10 @@ body {
   gap: 1em;
 
   background-color: var(--background-color);
-
 }
 
 body > * {
-  border:.1px solid green;
+  /* border: 0.1px solid green; */
   margin: 0 auto;
 
   width: 50%;
@@ -89,7 +88,7 @@ main {
   justify-content: center;
   align-items: center;
   align-content: center;
-  gap:1em;
+  gap: 1em;
 }
 
 main > * {
@@ -157,4 +156,6 @@ main > * {
   }
 }
 
-
+.clickable{
+  cursor: pointer;
+}

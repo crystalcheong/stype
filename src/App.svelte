@@ -1,45 +1,58 @@
 <script lang="ts">
   import { onMount, afterUpdate, tick } from "svelte";
-  import { ThemeStore, Options } from "./stores";
+  import { OptionStore, TypeSession } from "./stores";
   import ThemeSwitcher from "./components/ThemeSwitcher.svelte";
   import TypeTest from "./components/TypeTest.svelte";
+  import TypeResult from "./components/TypeResult.svelte";
 
-  let theme = ThemeStore.theme;
+  let themeOptions = OptionStore.theme;
+  let theme: string = $themeOptions.presets.currentTheme;
+
+  $: $themeOptions.presets.currentTheme,
+    (theme = $themeOptions.presets.currentTheme);
 
   const themeClass = (node, themeClass) => {
-    window.document.body.className = $theme == "system" ? "default" : $theme;
+    window.document.body.className = theme == "system" ? "default" : theme;
     return {
       update(themeClass) {
-        window.document.body.className =
-          $theme == "system" ? "default" : $theme;
+        window.document.body.className = theme == "system" ? "default" : theme;
       },
     };
   };
 
-  let duration = Options.duration;
-  let timerModeDuration: number[] = [15, 30, 60, 120];
+  let modeOptions = OptionStore.mode;
+  let currentDuration = $modeOptions.timerMode.currentDuration;
+  let timerModeDuration: number[] = $modeOptions.timerMode.durations;
+
+  let behaviourOptions = OptionStore.behaviour;
+  let testDifficultyLevels = $behaviourOptions.testDifficulty.levels;
+  let currentTestDifficulty = $behaviourOptions.testDifficulty.currentLevel;
+
+  let typeSession = TypeSession.instance;
 
   // onMount(async () => {});
 </script>
 
 <svelte:head>
-  <meta name="color-scheme" content={$theme == "system" ? "default" : $theme} />
+  <meta name="color-scheme" content={theme == "system" ? "default" : theme} />
 </svelte:head>
 
-<svelte:body use:themeClass={$theme} />
+<svelte:body use:themeClass={theme} />
 
 <nav>
   <div class="branding">
-    <h1 class="brand-name">stype</h1>
+    <h1 class="brand-name clickable">stype</h1>
   </div>
 
   <div class="options">
     <div class="countdown-duration">
       {#each timerModeDuration as time, id}
         <p
-          class:match={$duration === time}
+          class="clickable"
+          class:match={+currentDuration === time}
           on:click={() => {
-            duration.update((d) => (d = timerModeDuration[id]));
+            $modeOptions.timerMode.currentDuration = currentDuration =
+              timerModeDuration[id];
           }}
         >
           {time}
@@ -50,7 +63,26 @@
 </nav>
 
 <main>
-  <TypeTest />
+  <!-- {#each testDifficultyLevels as level, idx}
+    <label>
+      <input
+        type="radio"
+        id={String(idx)}
+        on:change={() => {
+          $behaviourOptions.testDifficulty.currentLevel =
+            currentTestDifficulty = idx;
+        }}
+        checked={currentTestDifficulty === idx}
+        value={level}
+      />&nbsp;{level}
+    </label>
+  {/each} -->
+
+  {#if $typeSession.testActive || $typeSession.history.length == 0}
+    <TypeTest />
+  {:else if !$typeSession.testActive}
+    <TypeResult />
+  {/if}
 </main>
 
 <footer>
@@ -70,7 +102,7 @@
   }
 
   nav > * {
-    border: 0.1px solid red;
+    /* border: 0.1px solid red; */
   }
 
   footer {
