@@ -48,6 +48,8 @@ html {
 body {
   /* border:.1px solid blue; */
   min-height: 100vh;
+  max-height: 100vh;
+  overflow: hidden;
 
   display: flex;
   flex-direction: column;
@@ -156,6 +158,6 @@ main > * {
   }
 }
 
-.clickable{
+.clickable {
   cursor: pointer;
 }

@@ -20,7 +20,10 @@
   const viewWidthBuffer = 0.85;
 
   let modeOptions = OptionStore.mode;
-  let duration = $modeOptions.timerMode.currentDuration;
+  let duration: number;
+  const subscribeMode = modeOptions.subscribe((m) => {
+    duration = m.timerMode.currentDuration;
+  });
 
   let countdown: number = +duration;
   let timer = CountdownTimer.createTimer(countdown);
@@ -65,24 +68,18 @@
 
   $: if ($modeOptions.timerMode.currentDuration != countdown) {
     timer.pause();
-
     duration = countdown = $modeOptions.timerMode.currentDuration;
-
     newTest();
   }
   $: if (duration != countdown) {
-    console.log(`TYPE TEST: ${duration}`);
     countdown = +duration;
   }
-  $: countdown, updateTimer();
-  $: activeIdx, (activeWord = words[activeIdx]);
-  $: lineWidth,
-    (viewNextLine = lineWidth >= viewWidth * viewWidthBuffer ? true : false);
+  $: if (countdown) updateTimer();
+  $: if (activeIdx) activeWord = words[activeIdx];
+  $: if (lineWidth)
+    viewNextLine = lineWidth >= viewWidth * viewWidthBuffer ? true : false;
   $: if (viewNextLine) scrollLine(viewNextLine);
-
   $: if ($timerIsComplete && !$timerIsRunning) {
-    console.log(`TIMER ENDED`);
-
     if (typedWord.length > 0 && !$timerIsRunning) {
       typeHistory.push(typedWord + overflowWord);
     }
@@ -139,31 +136,19 @@
       totalMissedChars += missed;
       totalExtraChars += extra;
 
-      console.log({
-        actualWord: actualWord,
-        typed: typed,
-        overflow: overflow,
-        correct: correct,
-        wrong: wrong,
-        missed: missed,
-        extra: extra,
-      });
+      // console.log({
+      //   actualWord: actualWord,
+      //   typed: typed,
+      //   overflow: overflow,
+      //   correct: correct,
+      //   wrong: wrong,
+      //   missed: missed,
+      //   extra: extra,
+      // });
     });
 
     rawWPM = Number((totalChars / 5 / (countdown / 60)).toPrecision(4));
     accuracy = Number(((totalMatchChars / totalChars) * 100).toPrecision(4));
-
-    // $typeSession.testActive = false;
-    // $typeSession.history.push({
-    //   rawWPM: rawWPM,
-    //   accuracy: accuracy,
-    //   testMode: {
-    //     mode: `time ${countdown}`,
-    //     language: `english`,
-    //     duration: new Date(1000 * countdown).toISOString().substr(11, 8),
-    //   },
-    //   characters: { match: totalMatchChars, mismatch: totalMismatchChars },
-    // });
 
     typeSession.update((ts) => {
       ts.testActive = false;
@@ -186,17 +171,17 @@
       return ts;
     });
 
-    console.log({
-      totalChars: totalChars,
-      totalSeconds: countdown,
-      totalMinutes: countdown / 60,
-      rawWPM: rawWPM,
-      accuracy: accuracy,
-      totalMatchChars: totalMatchChars,
-      totalMismatchChars: totalMismatchChars,
-      time: new Date(1000 * countdown).toISOString().substr(11, 8),
-      countdown: countdown,
-    });
+    // console.log({
+    //   totalChars: totalChars,
+    //   totalSeconds: countdown,
+    //   totalMinutes: countdown / 60,
+    //   rawWPM: rawWPM,
+    //   accuracy: accuracy,
+    //   totalMatchChars: totalMatchChars,
+    //   totalMismatchChars: totalMismatchChars,
+    //   time: new Date(1000 * countdown).toISOString().substr(11, 8),
+    //   countdown: countdown,
+    // });
   }
 
   function newTest() {
@@ -209,7 +194,7 @@
     resetFields();
 
     timer.reset();
-    console.log(words);
+    // console.log(words);
   }
 
   function resetFields() {
@@ -318,16 +303,16 @@
 
   afterUpdate(async () => {
     if ($timerIsRunning) {
-      console.log({
-        typedWord: typedWord,
-        overflowWord: overflowWord,
-        typeHistory: typeHistory,
-        activeIdx: activeIdx,
-        activeWord: activeWord,
-        viewNextLine: viewNextLine,
-        activeWidth: activeWidth,
-        lineWidth: lineWidth,
-      });
+      // console.log({
+      //   typedWord: typedWord,
+      //   overflowWord: overflowWord,
+      //   typeHistory: typeHistory,
+      //   activeIdx: activeIdx,
+      //   activeWord: activeWord,
+      //   viewNextLine: viewNextLine,
+      //   activeWidth: activeWidth,
+      //   lineWidth: lineWidth,
+      // });
     }
   });
 </script>

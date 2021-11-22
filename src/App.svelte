@@ -1,15 +1,37 @@
 <script lang="ts">
-  import { onMount, afterUpdate, tick } from "svelte";
+  import { onMount, onDestroy, tick } from "svelte";
   import { OptionStore, TypeSession } from "./stores";
   import ThemeSwitcher from "./components/ThemeSwitcher.svelte";
   import TypeTest from "./components/TypeTest.svelte";
   import TypeResult from "./components/TypeResult.svelte";
 
   let themeOptions = OptionStore.theme;
-  let theme: string = $themeOptions.presets.currentTheme;
+  let theme: string;
+  const subscribeTheme = themeOptions.subscribe((t) => {
+    theme = t.currentTheme;
+  });
 
-  $: $themeOptions.presets.currentTheme,
-    (theme = $themeOptions.presets.currentTheme);
+  async function updateThemeList() {
+    var newThemeList: string[] = [];
+    [].slice
+      .call(document.styleSheets[document.styleSheets.length - 1].cssRules)
+      .some(function (rule) {
+        if (rule.cssText.match(/^(\*)/g)) {
+          return true;
+        } else if (rule.cssText.match(/\.\w+/g)) {
+          var classSelector = rule.selectorText;
+          if (classSelector != null) {
+            newThemeList.push(classSelector.split(".")[1]);
+          }
+        }
+      });
+
+    themeOptions.update((to) => {
+      const theme = { ...to, themes: newThemeList };
+      return theme;
+    });
+    await tick();
+  }
 
   const themeClass = (node, themeClass) => {
     window.document.body.className = theme == "system" ? "default" : theme;
@@ -31,6 +53,13 @@
   let typeSession = TypeSession.instance;
 
   // onMount(async () => {});
+  onMount(async () => {
+    updateThemeList();
+  });
+
+  onDestroy(() => {
+    subscribeTheme();
+  });
 </script>
 
 <svelte:head>
@@ -103,10 +132,17 @@
 
   nav > * {
     /* border: 0.1px solid red; */
+    height: 100%;
   }
 
   footer {
-    padding: 2vh 0 1vh;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    place-content: flex-end;
+
+    padding: 2vh 0 3vh;
   }
 
   .branding {
@@ -120,15 +156,24 @@
     color: var(--primary-color);
   }
 
+  .options {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    align-content: center;
+  }
+
   .countdown-duration {
     display: flex;
     flex-direction: row;
     justify-content: flex-end;
     align-items: center;
     align-content: center;
-    gap: 0.3em;
+    gap: 0.5em;
 
-    font-size: 0.7rem;
+    font-size: 0.8rem;
+    font-weight: bold;
     color: var(--default-letter);
   }
 

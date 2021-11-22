@@ -23,14 +23,13 @@ let THEME_LIST: string[] = ["light", "dark"];
 
 const theme = writable(
   JSON.parse(localStorage.getItem(keyTheme)) || {
-    presets: {
-      currentTheme: "dark",
-      themes: THEME_LIST,
-    },
+    currentTheme: "dark",
+    themes: THEME_LIST,
+
+    modalBlur: false,
   }
 );
 theme.subscribe((i) => localStorage.setItem(keyTheme, JSON.stringify(i)));
-
 
 const keyMode = `${activeId}-mode`;
 let TIMER_MODE_DURATION: number[] = [15, 30, 60, 120];

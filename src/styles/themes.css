@@ -18,3 +18,52 @@
   --matched-letter: var(--primary-color);
 }
 
+.cyberspace{
+  --background-color: #181c18;
+  --primary-color: #9578d3;
+  --accent-color: #c2fbe1;
+
+  --default-letter: var(--accent-color);
+  --mismatched-letter: #ff5f5f;
+  --matched-letter: var(--primary-color);
+}
+
+.joker{
+  --background-color: #1a0e25;
+  --primary-color: #99de1e;
+  --accent-color: #e9e2f5;
+
+  --default-letter: var(--accent-color);
+  --mismatched-letter: #e32b2b;
+  --matched-letter: var(--primary-color);
+}
+
+.retrocast{
+  --background-color: #07737a;
+  --primary-color: #f3e03b;
+  --accent-color: #88dbdf;
+
+  --default-letter: var(--accent-color);
+  --mismatched-letter: #ff585d;
+  --matched-letter: var(--primary-color);
+
+  /* --bg-color: #07737a;
+  --main-color: #88dbdf;
+  --caret-color: #88dbdf;
+  --sub-color: #f3e03b;
+  --text-color: #ffffff;
+  --error-color: #ff585d;
+  --error-extra-color: #c04455;
+  --colorful-error-color: #ff585d;
+  --colorful-error-extra-color: #c04455; */
+}
+
+.comfy{
+  --background-color: #4a5b6e;
+  --primary-color: #9ec1cc;
+  --accent-color: #f8cdc6;
+
+  --default-letter: var(--accent-color);
+  --mismatched-letter: #c9465e;
+  --matched-letter: var(--primary-color);
+}
