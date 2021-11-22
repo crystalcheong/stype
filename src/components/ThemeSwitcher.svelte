@@ -41,8 +41,6 @@
   <p class="current-theme clickable" on:click|preventDefault={showThemeModal}>
     <Icon
       {...{
-        filled: false,
-        size: ".8em",
         alt: true,
         d: IconsData.palette,
       }}

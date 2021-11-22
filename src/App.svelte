@@ -1,9 +1,12 @@
 <script lang="ts">
   import { onMount, onDestroy, tick } from "svelte";
   import { OptionStore, TypeSession } from "./stores";
+  import { IconsData } from "./data";
   import ThemeSwitcher from "./components/ThemeSwitcher.svelte";
   import TypeTest from "./components/TypeTest.svelte";
   import TypeResult from "./components/TypeResult.svelte";
+  import Icon from "./components/Icon.svelte";
+  import PackageJson from "../package.json";
 
   let themeOptions = OptionStore.theme;
   let theme: string;
@@ -115,7 +118,27 @@
 </main>
 
 <footer>
-  <ThemeSwitcher />
+  <p class="external-link">
+    <Icon
+      {...{
+        alt: true,
+        d: IconsData.code,
+      }}
+    />&nbsp; Github
+  </p>
+
+  <aside class="right-links">
+    <ThemeSwitcher />
+
+    <p class="app-version">
+      <Icon
+        {...{
+          alt: true,
+          d: IconsData.code_merge,
+        }}
+      />&nbsp;{PackageJson.version}
+    </p>
+  </aside>
 </footer>
 
 <style>
@@ -140,9 +163,22 @@
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    place-content: flex-end;
+    align-content: center;
+    gap: 1em;
 
     padding: 2vh 0 3vh;
+    color: var(--primary-color);
+    font-size: 1em;
+    /* border-top: .1px solid var(--accent-color); */
+  }
+
+  .right-links {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    align-content: center;
+    gap: 1em;
   }
 
   .branding {
