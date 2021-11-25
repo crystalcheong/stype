@@ -15,38 +15,7 @@
     theme = t.currentTheme;
     themeList = t.themes;
   });
-  // Retrives and updates theme classes
-  async function updateThemeList() {
-    var newThemeList: string[] = [];
-    var sheetMarker: number;
 
-    var idx = document.styleSheets.length - 1;
-    var styles = document.styleSheets[idx];
-    [].slice.call(styles.rules || styles.cssRules).some(function (rule, idx) {
-      var classSelector = String(rule.selectorText);
-
-      if (classSelector.toUpperCase() === `.${themeList[0].toUpperCase()}`) {
-        sheetMarker = idx;
-      }
-
-      if (rule.cssText.match(/^(\*)/g)) {
-        return true;
-      } else if (rule.cssText.match(/\.\w+/g) && idx >= sheetMarker) {
-        if (classSelector != null) {
-          newThemeList.push(classSelector.split(".")[1]);
-        }
-      }
-    });
-
-    if (newThemeList.length > themeList.length) {
-      themeOptions.update((to) => {
-        const theme = { ...to, themes: newThemeList };
-        return theme;
-      });
-
-      await tick();
-    }
-  }
   // Apply current theme to DOM
   function themeClass(node, themeClass) {
     window.document.body.className = theme == "system" ? "default" : theme;
@@ -78,11 +47,6 @@
   // let behaviourOptions = OptionStore.behaviour;
   // let testDifficultyLevels = $behaviourOptions.testDifficulty.levels;
   // let currentTestDifficulty = $behaviourOptions.testDifficulty.currentLevel;
-
-  onMount(async () => {
-    // Populate the theme list
-    updateThemeList();
-  });
 
   onDestroy(() => {
     subscribeTheme();

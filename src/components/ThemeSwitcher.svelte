@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onMount, onDestroy } from "svelte";
+  import { onMount, afterUpdate, onDestroy, tick } from "svelte";
   import { OptionStore } from "../stores";
   import { IconsData } from "../data";
   import Modal from "../components/Modal.svelte";
@@ -18,15 +18,59 @@
       return theme;
     });
 
+  // Retrives and updates theme classes
+  async function updateThemeList() {
+    var newThemeList: string[] = [];
+    var sheetMarker: number;
+
+    try {
+      var idx = document.styleSheets.length - 1;
+      var styles = document.styleSheets[idx];
+      await [].slice.call(styles.cssRules).some(function (rule, idx) {
+        var classSelector = String(rule.selectorText);
+
+        if (classSelector.toUpperCase() === `.${themes[0].toUpperCase()}`) {
+          sheetMarker = idx;
+        }
+
+        if (rule.cssText.match(/^(\*)/g)) {
+          return true;
+        } else if (rule.cssText.match(/\.\w+/g) && idx >= sheetMarker) {
+          if (classSelector != null) {
+            newThemeList.push(classSelector.split(".")[1]);
+          }
+        }
+      });
+    } catch (e) {}
+
+    console.log(newThemeList);
+    if (newThemeList.length > themes.length) {
+      themeOptions.update((to) => {
+        const theme = { ...to, themes: newThemeList };
+        return theme;
+      });
+
+      await tick();
+    }
+  }
+
   let themeModal, showThemeModal;
 
-  onMount(function () {
-    showThemeModal = function () {
-      themeModal.openModal();
-    };
+  onMount(async () => {
+    // Populate the theme list
+    await updateThemeList().then(() => {
+      showThemeModal = function () {
+        themeModal.openModal();
+      };
+    });
+  });
+  
+  afterUpdate(async () => {
+    // Populate the theme list
+    await updateThemeList();
   });
 
-  onDestroy(() => {
+  onDestroy(async () => {
     subscribeTheme();
   });
 </script>
