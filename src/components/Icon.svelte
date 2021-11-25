@@ -37,6 +37,7 @@
   }
 
   .icon:hover,
+  .alt:hover,
   .icon-filled {
     color: var(--matched-letter);
     fill: var(--matched-letter);

@@ -10,58 +10,83 @@
 
   let themeOptions = OptionStore.theme;
   let theme: string;
+  var themeList: string[] = [];
   const subscribeTheme = themeOptions.subscribe((t) => {
     theme = t.currentTheme;
+    themeList = t.themes;
   });
-
+  // Retrives and updates theme classes
   async function updateThemeList() {
     var newThemeList: string[] = [];
-    [].slice
-      .call(document.styleSheets[document.styleSheets.length - 1].cssRules)
-      .some(function (rule) {
-        if (rule.cssText.match(/^(\*)/g)) {
-          return true;
-        } else if (rule.cssText.match(/\.\w+/g)) {
-          var classSelector = rule.selectorText;
-          if (classSelector != null) {
-            newThemeList.push(classSelector.split(".")[1]);
-          }
+    var sheetMarker: number;
+
+    var idx = document.styleSheets.length - 1;
+    var styles = document.styleSheets[idx];
+    [].slice.call(styles.rules || styles.cssRules).some(function (rule, idx) {
+      var classSelector = String(rule.selectorText);
+
+      if (classSelector.toUpperCase() === `.${themeList[0].toUpperCase()}`) {
+        sheetMarker = idx;
+      }
+
+      if (rule.cssText.match(/^(\*)/g)) {
+        return true;
+      } else if (rule.cssText.match(/\.\w+/g) && idx >= sheetMarker) {
+        if (classSelector != null) {
+          newThemeList.push(classSelector.split(".")[1]);
         }
+      }
+    });
+
+    if (newThemeList.length > themeList.length) {
+      themeOptions.update((to) => {
+        const theme = { ...to, themes: newThemeList };
+        return theme;
       });
 
-    themeOptions.update((to) => {
-      const theme = { ...to, themes: newThemeList };
-      return theme;
-    });
-    await tick();
+      await tick();
+    }
   }
-
-  const themeClass = (node, themeClass) => {
+  // Apply current theme to DOM
+  function themeClass(node, themeClass) {
     window.document.body.className = theme == "system" ? "default" : theme;
     return {
       update(themeClass) {
         window.document.body.className = theme == "system" ? "default" : theme;
       },
     };
-  };
+  }
 
   let modeOptions = OptionStore.mode;
-  let currentDuration = $modeOptions.timerMode.currentDuration;
-  let timerModeDuration: number[] = $modeOptions.timerMode.durations;
-
-  let behaviourOptions = OptionStore.behaviour;
-  let testDifficultyLevels = $behaviourOptions.testDifficulty.levels;
-  let currentTestDifficulty = $behaviourOptions.testDifficulty.currentLevel;
+  let currentDuration: number;
+  let timerModeDuration: number[];
+  const subscribeMode = modeOptions.subscribe((m) => {
+    currentDuration = m.timerMode.currentDuration;
+    timerModeDuration = m.timerMode.durations;
+  });
+  const updateMode = (newDuration) =>
+    modeOptions.update((m) => {
+      const mode = {
+        ...m,
+        timerMode: { ...m.timerMode, currentDuration: newDuration },
+      };
+      return mode;
+    });
 
   let typeSession = TypeSession.instance;
 
-  // onMount(async () => {});
+  // let behaviourOptions = OptionStore.behaviour;
+  // let testDifficultyLevels = $behaviourOptions.testDifficulty.levels;
+  // let currentTestDifficulty = $behaviourOptions.testDifficulty.currentLevel;
+
   onMount(async () => {
+    // Populate the theme list
     updateThemeList();
   });
 
   onDestroy(() => {
     subscribeTheme();
+    subscribeMode();
   });
 </script>
 
@@ -81,11 +106,8 @@
       {#each timerModeDuration as time, id}
         <p
           class="clickable"
-          class:match={+currentDuration === time}
-          on:click={() => {
-            $modeOptions.timerMode.currentDuration = currentDuration =
-              timerModeDuration[id];
-          }}
+          class:brand-name={+currentDuration === time}
+          on:click={() => updateMode(timerModeDuration[id])}
         >
           {time}
         </p>
@@ -117,20 +139,29 @@
   {/if}
 </main>
 
+<div class="key-tips">
+  <p><span class="key">Tab</span>&nbsp;&nbsp;-&nbsp;&nbsp;Restart Test</p>
+</div>
+
 <footer>
-  <p class="external-link">
+  <a
+    href="https://github.com/crystalcheong/stype"
+    target="_blank"
+    rel="noopener"
+    class="clickable"
+  >
     <Icon
       {...{
         alt: true,
-        d: IconsData.code,
+        d: IconsData.github,
       }}
-    />&nbsp; Github
-  </p>
+    />&nbsp;Github</a
+  >
 
   <aside class="right-links">
     <ThemeSwitcher />
 
-    <p class="app-version">
+    <p class="app-version clickable">
       <Icon
         {...{
           alt: true,
@@ -172,6 +203,29 @@
     /* border-top: .1px solid var(--accent-color); */
   }
 
+  .key-tips {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+    gap: 0.5em;
+
+    font-size: 0.8rem;
+    font-weight: bold;
+    color: var(--default-letter);
+  }
+
+  .key {
+    color: var(--background-color);
+    background-color: var(--default-letter);
+    padding: 0.2rem 0.3rem;
+    border-radius: 0.3rem;
+    display: inline-block;
+    vertical-align: middle;
+    line-height: 0.7rem;
+  }
+
   .right-links {
     display: flex;
     flex-direction: row;
@@ -211,11 +265,5 @@
     font-size: 0.8rem;
     font-weight: bold;
     color: var(--default-letter);
-  }
-
-  .match {
-    color: var(--matched-letter) !important;
-
-    filter: brightness(2.5);
   }
 </style>

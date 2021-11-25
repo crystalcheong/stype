@@ -70,6 +70,4 @@ const createTimer = (countdown: number = DEFAULT_DURATION) => {
   return timer;
 };
 
-// export const timer = createTimer();
-
 export default { createTimer, time, isRunning, isComplete };

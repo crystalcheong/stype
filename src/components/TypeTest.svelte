@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onMount, afterUpdate, tick } from "svelte";
+  import { afterUpdate, onDestroy, onMount, tick } from "svelte";
   import { WordsData, IconsData } from "../data";
   import { CountdownTimer, TypeSession, OptionStore } from "../stores";
   import Icon from "./Icon.svelte";
@@ -275,6 +275,10 @@
           activeWidth = activeElement.offsetWidth;
           lineWidth -= activeWidth;
 
+          // console.log({
+          //   activeWidth: activeWidth,
+          // });
+
           if (
             lineWidth * viewWidthBuffer <= 0 ||
             lineWidth < viewWidth * (1 - viewWidthBuffer)
@@ -300,20 +304,8 @@
   onMount(async () => {
     newTest();
   });
-
-  afterUpdate(async () => {
-    if ($timerIsRunning) {
-      // console.log({
-      //   typedWord: typedWord,
-      //   overflowWord: overflowWord,
-      //   typeHistory: typeHistory,
-      //   activeIdx: activeIdx,
-      //   activeWord: activeWord,
-      //   viewNextLine: viewNextLine,
-      //   activeWidth: activeWidth,
-      //   lineWidth: lineWidth,
-      // });
-    }
+  onDestroy(async () => {
+    subscribeMode();
   });
 </script>
 
@@ -322,18 +314,8 @@
 {#if timer}
   <div class="timer">
     <h2>
-      <!-- {$time} -->
       {+$time.split(":").reduce((acc, time) => `${60 * +acc + +time}`)}
     </h2>
-
-    <!-- {#if !$timerIsComplete}
-  {#if $timerIsRunning}
-    <button on:click={() => timer.pause()}>pause</button>
-    <button on:click={() => timer.reset()}>reset</button>
-  {:else}
-    <button on:click={() => timer.start()}>start</button>
-  {/if}
-{/if} -->
   </div>
 {/if}
 
@@ -376,19 +358,20 @@
   {/each}
 </section>
 
-<Icon
-  {...{
-    filled: false,
-    size: "1.2em",
-    strokeWidth: "30",
-    d: IconsData.arrow_rotate_right,
-  }}
-  on:click={newTest}
-/>
+<span data-tooltip="Restart Test">
+  <Icon
+    {...{
+      filled: false,
+      size: "1.2em",
+      strokeWidth: "30",
+      d: IconsData.arrow_rotate_right,
+    }}
+    on:click={newTest}
+  />
+</span>
 
 <style>
   .timer {
-    /* border: 0.1px solid red; */
     width: 100%;
     color: var(--primary-color);
     font-size: 1.5rem;
@@ -396,24 +379,19 @@
   }
 
   .type-test {
-    /* border: 0.1px solid red; */
     overflow: hidden;
     /* overflow: scroll; */
     height: 7rem;
   }
 
   .type-test > p {
-    /* display: inline-block; */
     display: inline-flex;
     font-size: 1.5em;
     line-height: 1.5;
     word-break: break-word;
-
-    /* border: 0.1px solid red; */
   }
 
   .type-test > p > span {
-    /* display: table-cell; */
     color: var(--default-letter);
 
     font-weight: 600;
@@ -423,8 +401,7 @@
 
   .match {
     color: var(--matched-letter) !important;
-
-    filter: brightness(2.5);
+    /* filter: brightness(2.5); */
   }
 
   .mismatch {

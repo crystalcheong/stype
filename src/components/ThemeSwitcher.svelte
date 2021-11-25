@@ -8,16 +8,10 @@
   let themeOptions = OptionStore.theme;
   let themes: string[] = [];
   let currentTheme: string;
-
   const subscribeTheme = themeOptions.subscribe((t) => {
     currentTheme = t.currentTheme;
     themes = t.themes;
-    // console.log({
-    //   currentTheme: currentTheme,
-    //   themes: themes,
-    // });
   });
-
   const updateTheme = () =>
     themeOptions.update((to) => {
       const theme = { ...to, currentTheme: currentTheme };
@@ -37,7 +31,7 @@
   });
 </script>
 
-{#if themeOptions}
+{#if themeOptions && themes.length > 0}
   <p class="current-theme clickable" on:click|preventDefault={showThemeModal}>
     <Icon
       {...{
@@ -87,8 +81,6 @@
   }
 
   .theme-list > * {
-    /* border: 0.1px solid red; */
-
     width: 100%;
   }
 

@@ -46,25 +46,29 @@
       </div>
     </div>
     <div class="stats-options">
-      <Icon
-        {...{
-          filled: false,
-          size: "1.2em",
-          strokeWidth: "30",
-          d: IconsData.chevron_right,
-        }}
-        on:click={() => {
-          $typeSession.testActive = true;
-        }}
-      />
+      <span class="centered" data-tooltip="Restart Test">
+        <Icon
+          {...{
+            filled: false,
+            size: "1.2em",
+            strokeWidth: "30",
+            d: IconsData.chevron_right,
+          }}
+          on:click={() => {
+            $typeSession.testActive = true;
+          }}
+        />
+      </span>
     </div>
   </section>
 {/if}
 
 <style>
-  .type-result {
-    /* border: 0.1px solid red; */
+  .centered {
+    text-align: center;
+  }
 
+  .type-result {
     flex: 0.8;
     width: 100%;
     /* display: flex;
@@ -78,12 +82,7 @@
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
-  /* .type-result > * {
-    border: 0.1px solid blue;
-  } */
   .type-result > * > * {
-    /* border: 0.1px solid green; */
-
     flex: 1;
     /* width: 100%; */
   }
@@ -142,14 +141,11 @@
   }
 
   .stat-title {
-    /* border: 0.1px solid green; */
     font-size: 1rem;
-    /* line-height: 1.5; */
     color: var(--accent-color);
   }
 
   .stat-value {
-    /* border: 0.1px solid yellow; */
     font-size: 1rem;
     color: var(--primary-color);
   }
@@ -188,7 +184,7 @@
     /* grid-row: span 2 / span 5; */
   }
 
-  .stats-options{
+  .stats-options {
     grid-row: span 2 / span 5;
   }
 
@@ -200,13 +196,13 @@
     align-content: center;
   }
 
-  .misc-stats > .stat-group:first-of-type{
+  .misc-stats > .stat-group:first-of-type {
     align-items: flex-start;
   }
-  .misc-stats > .stat-group:last-of-type{
+  .misc-stats > .stat-group:last-of-type {
     align-items: flex-end;
   }
-  
+
   /* } */
 
   /* Extra small devices (phones, 600px and down) */

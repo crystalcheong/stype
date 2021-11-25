@@ -37,7 +37,6 @@ export const instance = writable(activeSession);
 
 localStorage.setItem("instance", JSON.stringify(instance));
 
-// sessionStorage.setItem("sessionId", instance.uuid);
 instance.subscribe((i) => localStorage.setItem("instance", JSON.stringify(i)));
 
 const activeId = activeSession.uuid;

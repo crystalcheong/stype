@@ -2,13 +2,12 @@
   import { onDestroy } from "svelte";
   import { OptionStore } from "../stores";
 
-  let themeOptions = OptionStore.theme;
   let showModal: Boolean = false;
 
+  let themeOptions = OptionStore.theme;
   const subscribeTheme = themeOptions.subscribe((t) => {
     showModal = t.modalBlur;
   });
-
   const updateTheme = () =>
     themeOptions.update((to) => {
       const theme = { ...to, modalBlur: showModal };
@@ -24,7 +23,6 @@
     showModal = true;
     updateTheme();
   }
-
   function closeModal() {
     showModal = false;
     updateTheme();
@@ -52,8 +50,6 @@
 
 <style>
   .modal-backdrop {
-    /* border: 0.1px solid red; */
-
     height: 100vh;
     width: 100vw;
     min-width: 100vw !important;
@@ -79,7 +75,7 @@
   }
 
   .modal-content {
-    border: 0.1px solid green;
+    border: 0.1px solid var(--primary-color);
     background: palegoldenrod;
     /* flex: 0.8; */
     width: 70%;
@@ -94,9 +90,5 @@
     overflow-y: scroll;
     position: relative;
     z-index: 50;
-  }
-
-  .modal-content > * {
-    border: 0.1px solid blue;
   }
 </style>
