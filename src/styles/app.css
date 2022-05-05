@@ -121,7 +121,7 @@ main > * {
   animation: 1s blink step-end infinite;
 }
 
-@keyframes "blink" {
+@keyframes blink {
   from,
   to {
     color: transparent;
@@ -141,7 +141,7 @@ main > * {
   }
 }
 
-@-webkit-keyframes "blink" {
+@-webkit-keyframes blink {
   from,
   to {
     color: transparent;
@@ -151,7 +151,7 @@ main > * {
   }
 }
 
-@-ms-keyframes "blink" {
+@-ms-keyframes blink {
   from,
   to {
     color: transparent;
@@ -161,7 +161,7 @@ main > * {
   }
 }
 
-@-o-keyframes "blink" {
+@-o-keyframes blink {
   from,
   to {
     color: transparent;

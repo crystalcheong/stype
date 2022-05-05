@@ -307,6 +307,7 @@
   onDestroy(async () => {
     subscribeMode();
   });
+
 </script>
 
 <svelte:window on:keydown={handleKeydown} />
@@ -314,7 +315,7 @@
 {#if timer}
   <div class="timer">
     <h2>
-      {+$time.split(":").reduce((acc, time) => `${60 * +acc + +time}`)}
+      {+$time.split(":").reduce((acc, time) => `${(60 * +acc + +time) - 1800}`)}
     </h2>
   </div>
 {/if}

@@ -43,7 +43,7 @@
       });
     } catch (e) {}
 
-    console.log(newThemeList);
+    //console.log(newThemeList);
     if (newThemeList.length > themes.length) {
       themeOptions.update((to) => {
         const theme = { ...to, themes: newThemeList };
