@@ -1,13 +1,10 @@
-<div align="center">
-  <img alt="Logo" src="https://github.com/crystalcheong/stype/blob/main/public/favicon.ico" width="30" />
-</div>
- 
-<h3 align="center">
-  stype
-</h3>
+### stype 
+
+> Recreation of <a href="https://monkeytype.com/" target="_blank">MonkeyType</a>, the minimalistic and customizable typing test, built with <a href="https://svelte.dev/" target="_blank">Svelte</a> + <a href="https://vitejs.dev/" target="_blank">Vite</a> and hosted with <a href="https://vercel.com/" target="_blank">Vercel</a>
+<br/>
 
 <p align="center">
-  Recreation of <a href="https://monkeytype.com/" target="_blank">MonkeyType</a>, the minimalistic and customizable typing test, built with <a href="https://svelte.dev/" target="_blank">Svelte</a> + <a href="https://vitejs.dev/" target="_blank">Vite</a> and hosted with <a href="https://vercel.com/" target="_blank">Vercel</a>
+  <img src="https://user-images.githubusercontent.com/65748007/175779079-43317f0f-edc2-4144-944c-3a999a884aeb.png" alt="Project Cover"/>
 </p>
 
 ---
