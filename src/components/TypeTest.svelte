@@ -315,7 +315,7 @@
 {#if timer}
   <div class="timer">
     <h2>
-      {+$time.split(":").reduce((acc, time) => `${(60 * +acc + +time) - 1800}`)}
+      {+$time.split(":").reduce((acc, time) => `${(60 * +acc)+ +time}`)}
     </h2>
   </div>
 {/if}

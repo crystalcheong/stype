@@ -18,6 +18,6 @@
     "typescript": "^4.7.4",
     "uuid": "^8.3.2",
     "vite": "^2.9.12",
-    "vite-plugin-windicss": "^1.8.4"
+    "vite-plugin-windicss": "^1.8.5"
   }
 }
