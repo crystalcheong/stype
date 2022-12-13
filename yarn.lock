@@ -2,10 +2,10 @@
 # yarn lockfile v1
 
 
-"@antfu/utils@^0.5.2":
-  version "0.5.2"
-  resolved "https://registry.yarnpkg.com/@antfu/utils/-/utils-0.5.2.tgz#8c2d931ff927be0ebe740169874a3d4004ab414b"
-  integrity sha512-CQkeV+oJxUazwjlHD0/3ZD08QWKuGQkhnrKo3e6ly5pd48VUpXbb77q0xMU4+vc2CkJnDS02Eq/M9ugyX20XZA==
+"@antfu/utils@^0.7.2":
+  version "0.7.2"
+  resolved "https://registry.yarnpkg.com/@antfu/utils/-/utils-0.7.2.tgz#3bb6f37a6b188056fe9e2f363b6aa735ed65d7ca"
+  integrity sha512-vy9fM3pIxZmX07dL+VX1aZe7ynZ+YyB0jY+jE6r3hOK6GNY2t6W8rzpFC4tgpbXUYABkFQwgJq2XYXlxbXAI0g==
 
 "@jridgewell/resolve-uri@^3.0.3":
   version "3.0.7"
@@ -16,6 +16,11 @@
   version "1.4.13"
   resolved "https://registry.yarnpkg.com/@jridgewell/sourcemap-codec/-/sourcemap-codec-1.4.13.tgz#b6461fb0c2964356c469e115f504c95ad97ab88c"
   integrity sha512-GryiOJmNcWbovBxTfZSF71V/mXbgcV3MewDe3kIMCLyIh5e7SKAeUZs+rMnJ8jkMolZ/4/VsdBmMrw3l+VdZ3w==
+
+"@jridgewell/sourcemap-codec@^1.4.13":
+  version "1.4.14"
+  resolved "https://registry.yarnpkg.com/@jridgewell/sourcemap-codec/-/sourcemap-codec-1.4.14.tgz#add4c98d341472a289190b424efbdb096991bb24"
+  integrity sha512-XPSJHWmi394fuUuzDnGz1wiKqWfo1yXecHQMRf2l6hztTO+nPru658AyDngaBe7isIxEkRsPR3FZh+s7iVa4Uw==
 
 "@jridgewell/trace-mapping@^0.3.9":
   version "0.3.13"
@@ -88,27 +93,27 @@
   dependencies:
     "@types/node" "*"
 
-"@windicss/config@1.8.5":
-  version "1.8.5"
-  resolved "https://registry.yarnpkg.com/@windicss/config/-/config-1.8.5.tgz#4c8a82579f421f3e6c15d5132ed938f81ee778f9"
-  integrity sha512-1z7uH/1EQRRxBViSlbfrLE45MQ3IqUEeEwTvoqWVqFfFnYLejvhiX2DHp8nMqZI5vQe1bw1Wi/Aspi4xlVGJkQ==
+"@windicss/config@1.8.9":
+  version "1.8.9"
+  resolved "https://registry.yarnpkg.com/@windicss/config/-/config-1.8.9.tgz#afbaaa87c4e9d3e79a12f5080bae8c64103ac08e"
+  integrity sha512-ikvKVrr/CsTO5FEpPWTyCMryoukIDsc0p8KxU8q8Fgt45SIPNZRaYP9yNJvDE1ytrPnwvgOMRXMxuMmxOXtvMQ==
   dependencies:
     debug "^4.3.4"
-    jiti "^1.14.0"
-    windicss "^3.5.5"
+    jiti "^1.16.0"
+    windicss "^3.5.6"
 
-"@windicss/plugin-utils@1.8.5":
-  version "1.8.5"
-  resolved "https://registry.yarnpkg.com/@windicss/plugin-utils/-/plugin-utils-1.8.5.tgz#ee6e57a933a6e70d897c3b7e9e4a15be566dffb2"
-  integrity sha512-mrwvBETwVqPhc/996Q4mPjjzi7SdEfDgfC/tTaP+BUEpKnZHPwjKpfy0BM7779Osu23ypsVHUKzE9KSo0TIcRw==
+"@windicss/plugin-utils@1.8.9":
+  version "1.8.9"
+  resolved "https://registry.yarnpkg.com/@windicss/plugin-utils/-/plugin-utils-1.8.9.tgz#eb1f4bbaba4f4e7884285481a62ada0e73cf611c"
+  integrity sha512-c4n6LX9B8tokBM0PitCY+GPobUMklrfNF+TfwHr2RpN+SIJ37CxEEBCB7Q4QpUVdSyCW99RCGkxb/7ysT2MSkg==
   dependencies:
-    "@antfu/utils" "^0.5.2"
-    "@windicss/config" "1.8.5"
+    "@antfu/utils" "^0.7.2"
+    "@windicss/config" "1.8.9"
     debug "^4.3.4"
-    fast-glob "^3.2.11"
-    magic-string "^0.26.2"
+    fast-glob "^3.2.12"
+    magic-string "^0.27.0"
     micromatch "^4.0.5"
-    windicss "^3.5.5"
+    windicss "^3.5.6"
 
 anymatch@~3.1.2:
   version "3.1.2"
@@ -326,7 +331,18 @@ estree-walker@^2.0.1:
   resolved "https://registry.yarnpkg.com/estree-walker/-/estree-walker-2.0.2.tgz#52f010178c2a4c117a7757cfe942adb7d2da4cac"
   integrity sha512-Rfkk/Mp/DL7JVje3u18FxFujQlTNR2q6QfMSMB7AvCBx91NGj/ba3kCfza0f6dVDbw7YlRf/nDrn7pQrCCyQ/w==
 
-fast-glob@^3.2.11, fast-glob@^3.2.7:
+fast-glob@^3.2.12:
+  version "3.2.12"
+  resolved "https://registry.yarnpkg.com/fast-glob/-/fast-glob-3.2.12.tgz#7f39ec99c2e6ab030337142da9e0c18f37afae80"
+  integrity sha512-DVj4CQIYYow0BlaelwK1pHl5n5cRSJfM60UA0zK891sVInoPri2Ekj7+e1CT3/3qxXenpI+nBBmQAcJPJgaj4w==
+  dependencies:
+    "@nodelib/fs.stat" "^2.0.2"
+    "@nodelib/fs.walk" "^1.2.3"
+    glob-parent "^5.1.2"
+    merge2 "^1.3.0"
+    micromatch "^4.0.4"
+
+fast-glob@^3.2.7:
   version "3.2.11"
   resolved "https://registry.yarnpkg.com/fast-glob/-/fast-glob-3.2.11.tgz#a1172ad95ceb8a16e20caa5c5e56480e5129c1d9"
   integrity sha512-xrO3+1bxSo3ZVHAnqzyuewYT6aMFHRAd4Kcs92MAonjwQZLsK9d0SF1IyQ3k5PoirxTW0Oe/RqFgMQ6TcNE5Ew==
@@ -449,20 +465,20 @@ is-number@^7.0.0:
   resolved "https://registry.yarnpkg.com/is-number/-/is-number-7.0.0.tgz#7535345b896734d5f80c4d06c50955527a14f12b"
   integrity sha512-41Cifkg6e8TylSpdtTpeLVMqvSBEVzTttHvERD741+pnZ8ANv0004MRL43QKPDlK9cGvNp6NZWZUBlbGXYxxng==
 
-jiti@^1.14.0:
-  version "1.14.0"
-  resolved "https://registry.yarnpkg.com/jiti/-/jiti-1.14.0.tgz#5350fff532a4d891ca4bcd700c47c1f40e6ee326"
-  integrity sha512-4IwstlaKQc9vCTC+qUXLM1hajy2ImiL9KnLvVYiaHOtS/v3wRjhLlGl121AmgDgx/O43uKmxownJghS5XMya2A==
+jiti@^1.16.0:
+  version "1.16.0"
+  resolved "https://registry.yarnpkg.com/jiti/-/jiti-1.16.0.tgz#f72065954446ad1866fa8d6bcc3bed3cc1cebdaa"
+  integrity sha512-L3BJStEf5NAqNuzrpfbN71dp43mYIcBUlCRea/vdyv5dW/AYa1d4bpelko4SHdY3I6eN9Wzyasxirj1/vv5kmg==
 
 kleur@^4.1.4:
   version "4.1.4"
   resolved "https://registry.yarnpkg.com/kleur/-/kleur-4.1.4.tgz#8c202987d7e577766d039a8cd461934c01cda04d"
   integrity sha512-8QADVssbrFjivHWQU7KkMgptGTl6WAcSdlbBPY4uNF+mWr6DGcKrvY2w4FQJoXch7+fKMjj0dRrL75vk3k23OA==
 
-kolorist@^1.5.1:
-  version "1.5.1"
-  resolved "https://registry.yarnpkg.com/kolorist/-/kolorist-1.5.1.tgz#c3d66dc4fabde4f6b7faa6efda84c00491f9e52b"
-  integrity sha512-lxpCM3HTvquGxKGzHeknB/sUjuVoUElLlfYnXZT73K8geR9jQbroGlSCFBax9/0mpGoD3kzcMLnOlGQPJJNyqQ==
+kolorist@^1.6.0:
+  version "1.6.0"
+  resolved "https://registry.yarnpkg.com/kolorist/-/kolorist-1.6.0.tgz#f43ac794305b30032a5bedcae7799d0f91d2ff36"
+  integrity sha512-dLkz37Ab97HWMx9KTes3Tbi3D1ln9fCAy2zr2YVExJasDRPGRaKcoE4fycWNtnCAJfjFqe0cnY+f8KT2JePEXQ==
 
 magic-string@^0.25.7:
   version "0.25.9"
@@ -477,6 +493,13 @@ magic-string@^0.26.2:
   integrity sha512-NzzlXpclt5zAbmo6h6jNc8zl2gNRGHvmsZW4IvZhTC4W7k4OlLP+S5YLussa/r3ixNT66KOQfNORlXHSOy/X4A==
   dependencies:
     sourcemap-codec "^1.4.8"
+
+magic-string@^0.27.0:
+  version "0.27.0"
+  resolved "https://registry.yarnpkg.com/magic-string/-/magic-string-0.27.0.tgz#e4a3413b4bab6d98d2becffd48b4a257effdbbf3"
+  integrity sha512-8UnnX2PeRAPZuN12svgR9j7M1uWMovg/CEnIwIG0LFkXSJJe4PdfUGiTGl8V9bsBHFUtfVINcSyYxd7q+kx9fA==
+  dependencies:
+    "@jridgewell/sourcemap-codec" "^1.4.13"
 
 merge2@^1.3.0:
   version "1.4.1"
@@ -737,15 +760,15 @@ uuid@^8.3.2:
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-8.3.2.tgz#80d5b5ced271bb9af6c445f21a1a04c606cefbe2"
   integrity sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==
 
-vite-plugin-windicss@^1.8.5:
-  version "1.8.5"
-  resolved "https://registry.yarnpkg.com/vite-plugin-windicss/-/vite-plugin-windicss-1.8.5.tgz#de00ea11da0e53cc33103ca498a2c5142b50da1e"
-  integrity sha512-Yj2vLhZhYkkLt1RMl3X8hONCfPJQuHx5j5mO4vDK5PmRZ4vQwMoNWWge7+pqLdPwrH9+lpYynKe1OzMHz3HvgQ==
+vite-plugin-windicss@^1.8.9:
+  version "1.8.9"
+  resolved "https://registry.yarnpkg.com/vite-plugin-windicss/-/vite-plugin-windicss-1.8.9.tgz#cd4e843ab1d956bdcb8aa81a676739dae6781bcd"
+  integrity sha512-ADM8jBcZKJ9RXdnUy47R/omX6xQuW3U0DcwX2lb21tCO2ticG0JY1/ji/8ysB9/cMluGVOCue2EL5Su3ZVy7Jg==
   dependencies:
-    "@windicss/plugin-utils" "1.8.5"
+    "@windicss/plugin-utils" "1.8.9"
     debug "^4.3.4"
-    kolorist "^1.5.1"
-    windicss "^3.5.5"
+    kolorist "^1.6.0"
+    windicss "^3.5.6"
 
 vite@^2.9.12:
   version "2.9.12"
@@ -759,10 +782,10 @@ vite@^2.9.12:
   optionalDependencies:
     fsevents "~2.3.2"
 
-windicss@^3.5.5:
-  version "3.5.5"
-  resolved "https://registry.yarnpkg.com/windicss/-/windicss-3.5.5.tgz#43d6071c79f18898f15671fdda41e88fa7c6366e"
-  integrity sha512-Mnbb9DT+74cw3UxcVimbwCw5tKxITNvOBwTFMFdUv9f5KoZensestA4vKUM8tw74QAwyjE5bqH0QQufgFQwj0Q==
+windicss@^3.5.6:
+  version "3.5.6"
+  resolved "https://registry.yarnpkg.com/windicss/-/windicss-3.5.6.tgz#30a34da76894d952a96c9a1921f2e91e13932183"
+  integrity sha512-P1mzPEjgFMZLX0ZqfFht4fhV/FX8DTG7ERG1fBLiWvd34pTLVReS5CVsewKn9PApSgXnVfPWwvq+qUsRwpnwFA==
 
 wrappy@1:
   version "1.0.2"
